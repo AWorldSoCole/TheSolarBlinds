@@ -48,10 +48,10 @@ namespace TheSolarBlinds
 			};
 
 			weather_forecast_btn.Click += delegate {   // Forecast button will request json from OpenWeatherMap using the stored city id
-//				var forecastIntent = new Intent (this, typeof(ForecastActivity));
-//				forecastIntent.PutExtra ("CityId", weather_city_id);
-//				//				Console.WriteLine(weather_city_id);
-//				StartActivity(forecastIntent);
+				var forecastIntent = new Intent (this, typeof(ForecastActivity));
+				forecastIntent.PutExtra ("CityId", weather_city_id);
+				//				Console.WriteLine(weather_city_id);
+				StartActivity(forecastIntent);
 			};
 		}
 
