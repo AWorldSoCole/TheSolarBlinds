@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/linearLayout2">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout1"
+        android:gravity="center_horizontal">
+        <Button
+            android:text="Sync"
+            android:id="@+id/sync_btn"
+            android:layout_width="150dp"
+            android:layout_height="match_parent" />
+        <ToggleButton
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:id="@+id/sync_read_write_btn"
+            android:textOn="Read"
+            android:textOff="Write"
+            android:clickable="true"
+            android:checked="true" />
+    </LinearLayout>
+    <TableLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tableLayout1"
+        android:layout_gravity="center_horizontal">
+        <TableRow
+            android:id="@+id/tableRow1">
+            <TextView
+                android:text="Id: "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="0"
+                android:id="@+id/textView18"
+                android:layout_height="match_parent" />
+            <EditText
+                android:layout_column="1"
+                android:id="@+id/sync_set_id"
+                android:minWidth="50dp" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow2">
+            <TextView
+                android:text="Nickname: "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="0"
+                android:id="@+id/textView13" />
+            <EditText
+                android:layout_column="1"
+                android:id="@+id/sync_set_nickname"
+                android:minWidth="50dp" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow3">
+            <TextView
+                android:text="Device Id: "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="0"
+                android:id="@+id/textView17" />
+            <EditText
+                android:layout_column="1"
+                android:id="@+id/sync_set_device_id"
+                android:minWidth="50dp" />
+        </TableRow>
+    </TableLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout3"
+        android:layout_gravity="center_horizontal">
+        <Button
+            android:text="Delete"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/sync_delete_btn" />
+        <Button
+            android:text="Set"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/sync_set_btn" />
+        <Button
+            android:text="Save"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/sync_save_btn" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout4"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:text="Status: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/textView19" />
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/sync_set_message"
+            android:minWidth="200dp" />
+    </LinearLayout>
+    <TextView
+        android:text="Registered ID:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1"
+        android:layout_gravity="center_horizontal" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal">
+        <ListView
+            android:id="@+id/sync_list_view"
+            android:layout_width="300dp"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
+</LinearLayout>
