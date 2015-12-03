@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheSolarBlinds", "TheSolarBlinds\TheSolarBlinds.csproj", "{0CC6203C-5CFB-4A81-8835-89FA59575E32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheSolarBlinds.UITests", "TheSolarBlinds.UITests\TheSolarBlinds.UITests.csproj", "{1BBA3F7C-2244-492F-8947-EF60EB00F48E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CC6203C-5CFB-4A81-8835-89FA59575E32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CC6203C-5CFB-4A81-8835-89FA59575E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CC6203C-5CFB-4A81-8835-89FA59575E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CC6203C-5CFB-4A81-8835-89FA59575E32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BBA3F7C-2244-492F-8947-EF60EB00F48E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BBA3F7C-2244-492F-8947-EF60EB00F48E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BBA3F7C-2244-492F-8947-EF60EB00F48E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BBA3F7C-2244-492F-8947-EF60EB00F48E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

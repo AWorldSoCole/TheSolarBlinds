@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal">
+    <ImageButton
+        android:src="@drawable/menu_motor_icon"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:id="@+id/menu_motor_btn"
+        android:background="#E2D300" />
+    <ImageButton
+        android:src="@drawable/menu_weather_icon"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:id="@+id/menu_weather_btn"
+        android:background="#E2D300" />
+    <ImageButton
+        android:src="@drawable/menu_sync_icon"
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:id="@+id/menu_sync_btn"
+        android:background="#E2D300" />
+</LinearLayout>
