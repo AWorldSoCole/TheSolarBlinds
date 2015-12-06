@@ -13,6 +13,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using System.Threading;
 
 namespace TheSolarBlinds{
 	[Activity (Label = "Sync")]			
@@ -22,6 +23,7 @@ namespace TheSolarBlinds{
 		private ListView sync_list_view;
 		DBRepository dbr;
 		EditText sync_set_id, sync_set_nickname, sync_set_device_id;
+		Button sync_btn, sync_delete_btn, sync_set_btn, sync_save_btn;
 		TextView sync_set_message;
 		ToggleButton sync_read_write_btn;
 		NfcAdapter nfcAdapter;
@@ -48,39 +50,40 @@ namespace TheSolarBlinds{
 			else
 				Toast.MakeText (this, "NFC is not available!", ToastLength.Short).Show ();
 
+			Console.WriteLine ("Button Check 1");
+			// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
+			// BluetoothAdapter through BluetoothManager.
+//			BluetoothManager bluetoothManager = (BluetoothManager) GetSystemService (Context.BluetoothService);
+//			mBluetoothAdapter = bluetoothManager.Adapter;
+
+			// Checks if Bluetooth is supported on the device.
+			if (mBluetoothAdapter != null && mBluetoothAdapter.IsEnabled) {
+				Toast.MakeText (this, "Bluetooth is available", ToastLength.Short).Show();
+			} else
+				Toast.MakeText (this, "Bluetooth is not supported", ToastLength.Short).Show();
+
+			Console.WriteLine ("Button Check 2");
 			// Use this check to determine whether BLE is supported on the device.  Then you can
 			// selectively disable BLE-related features.
 			if (!PackageManager.HasSystemFeature (Android.Content.PM.PackageManager.FeatureBluetoothLe)) {
 				Toast.MakeText (this, "Bluetooth LE not supported", ToastLength.Short).Show ();
 			}
 
-			// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-			// BluetoothAdapter through BluetoothManager.
-			BluetoothManager bluetoothManager = (BluetoothManager) GetSystemService (Context.BluetoothService);
-			mBluetoothAdapter = bluetoothManager.Adapter;
-
-			// Checks if Bluetooth is supported on the device.
-			if (mBluetoothAdapter != null && mBluetoothAdapter.IsEnabled) {
-				Toast.MakeText (this, "Bluetooth is available", ToastLength.Short).Show();
-				return;
-			} else
-				Toast.MakeText (this, "Bluetooth is not supported", ToastLength.Short).Show();
-
-
-
-			// Create your application here
+			Console.WriteLine ("Button Check 3");
+			// Create a database to manage the solar blinds
 			dbr = new DBRepository ("IdNickname");
 
 			// Get resoucres for the layout of the device
-			Button sync_btn = FindViewById<Button> (Resource.Id.sync_btn);
-			Button sync_delete_btn = FindViewById<Button> (Resource.Id.sync_delete_btn);
-			Button sync_set_btn = FindViewById<Button> (Resource.Id.sync_set_btn);
-			Button sync_save_btn = FindViewById<Button> (Resource.Id.sync_save_btn);
+			sync_btn = FindViewById<Button> (Resource.Id.sync_btn);
+			sync_delete_btn = FindViewById<Button> (Resource.Id.sync_delete_btn);
+			sync_set_btn = FindViewById<Button> (Resource.Id.sync_set_btn);
+			sync_save_btn = FindViewById<Button> (Resource.Id.sync_save_btn);
 			sync_set_id = FindViewById<EditText> (Resource.Id.sync_set_id);
 			sync_set_nickname = FindViewById <EditText> (Resource.Id.sync_set_nickname);
 			sync_set_device_id = FindViewById<EditText> (Resource.Id.sync_set_device_id);
 			sync_set_message = FindViewById<TextView> (Resource.Id.sync_set_message);
 			sync_read_write_btn = FindViewById<ToggleButton> (Resource.Id.sync_read_write_btn);
+			sync_list_view = FindViewById<ListView> (Resource.Id.sync_list_view);
 
 			// Initalize the list view
 			getCursorView ();
@@ -90,7 +93,6 @@ namespace TheSolarBlinds{
 			sync_delete_btn.Click += syncDeleteBtnClick;
 			sync_set_btn.Click += syncSetBtnClick;
 			sync_save_btn.Click += syncSaveBtnClick;
-			sync_list_view = FindViewById<ListView> (Resource.Id.sync_list_view);
 			sync_list_view.ItemClick += syncListViewItemClick;
 			sync_read_write_btn.Click += syncReadWriteBtnClick;
 		}
@@ -100,6 +102,7 @@ namespace TheSolarBlinds{
 			sync_set_message.Text = " ";
 		}
 
+		// The user can press the save button ot update a device name
 		void syncSaveBtnClick (object sender, EventArgs e)
 		{
 			int iId = -1;
@@ -110,11 +113,13 @@ namespace TheSolarBlinds{
 			getCursorView ();
 		}
 
+		// The user can use the set button to resync the phone with the solar blinds
 		void syncSetBtnClick (object sender, EventArgs e)
 		{
-
+			Console.WriteLine ("Button pushed");
 		}
 
+		// The user can press the delete button to remove a 
 		void syncDeleteBtnClick (object sender, EventArgs e)
 		{
 			int iId = -1;
@@ -125,6 +130,7 @@ namespace TheSolarBlinds{
 			getCursorView ();
 		}
 
+		// The actions that happen when a user clicks on the listview 
 		void syncListViewItemClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			TextView sync_id = e.View.FindViewById<TextView> (Resource.Id.sync_id);
@@ -136,9 +142,51 @@ namespace TheSolarBlinds{
 			sync_set_device_id.Text = sync_device_id.Text;
 		}
 
+
 		void syncBtnClick (object sender, EventArgs e)
 		{
+			int count = 1;
+			string data = null;
+			BluetoothManager manager = new BluetoothManager ();
+			manager.getAllPairedDevices ();
 
+			Thread thread = new Thread(() =>
+				{
+					while (true) {
+						data = manager.getDataFromDevice();
+					}
+				});
+			thread.IsBackground = true;
+			thread.Start ();
+
+			Console.WriteLine ("Sync Button pushed");
+			Toast.MakeText (this, "SyncButton Pressed!", ToastLength.Short).Show ();
+			sync_read_write_btn = FindViewById<ToggleButton> (Resource.Id.sync_read_write_btn);
+			sync_set_message = FindViewById<TextView> (Resource.Id.sync_set_message);
+			Console.WriteLine("Testing the Bluetooth!!!");
+
+			// When read is selected begin reading and parsing the NFC tag
+			if (sync_read_write_btn.Checked) {
+				Console.WriteLine ("read/write button is checked");
+				//				IParcelable[] parcelables = intent.GetParcelableArrayExtra (NfcAdapter.ExtraNdefMessages);
+
+				//				if (parcelables != null && parcelables.Length > 0) {
+				Console.WriteLine ("Tag has data");
+				//					readTextFromMessages ((NdefMessage)parcelables[0]);
+				//					NdefMessage ndefmessage = (NdefMessage) parcelables[0];
+
+				// MAC Address from NFC tag 
+				//					sync_set_message.Text = Encoding.UTF8.GetString(ndefmessage.GetRecords()[0].GetPayload());
+				sync_set_message.Text = "C4:BE:84:E9:02:04";
+				Console.WriteLine ("MAC Address: " + sync_set_message.Text + " Valid: " + BluetoothAdapter.CheckBluetoothAddress (sync_set_message.Text));
+
+				// Get the Bluetooth device
+//				bt_peripheral = mBluetoothAdapter.GetRemoteDevice ("C4:BE:84:E9:02:04");
+//				Console.WriteLine ("Device Name: " + bt_peripheral.Name + " " + "Device Address: " + bt_peripheral.Address);
+//				var listOfDevices = mBluetoothAdapter.BondedDevices;
+//				Console.WriteLine (listOfDevices);
+//				bluetoothSocket = bt_peripheral.CreateRfcommSocketToServiceRecord(BluetoothService.SerialPort);
+			}
 		}
 
 		protected override void OnNewIntent(Intent intent) {
@@ -150,21 +198,33 @@ namespace TheSolarBlinds{
 
 			// When read is selected begin reading and parsing the NFC tag
 			if (sync_read_write_btn.Checked) {
-				Console.WriteLine("read/write button check 1");
-				IParcelable[] parcelables = intent.GetParcelableArrayExtra (NfcAdapter.ExtraNdefMessages);
+				Console.WriteLine("read/write button is checked");
+//				IParcelable[] parcelables = intent.GetParcelableArrayExtra (NfcAdapter.ExtraNdefMessages);
 
-				if (parcelables != null && parcelables.Length > 0) {
-					Console.WriteLine("read/write button check 2");
+//				if (parcelables != null && parcelables.Length > 0) {
+					Console.WriteLine("Tag has data");
 					//					readTextFromMessages ((NdefMessage)parcelables[0]);
-					NdefMessage ndefmessage = (NdefMessage) parcelables[0];
+//					NdefMessage ndefmessage = (NdefMessage) parcelables[0];
 
 					// MAC Address from NFC tag 
-					sync_set_message.Text = Encoding.UTF8.GetString(ndefmessage.GetRecords()[0].GetPayload());
+//					sync_set_message.Text = Encoding.UTF8.GetString(ndefmessage.GetRecords()[0].GetPayload());
+					sync_set_message.Text = "C4:BE:84:E9:02:04";
 					Console.WriteLine("MAC Address: " + sync_set_message.Text + "Valid: " + BluetoothAdapter.CheckBluetoothAddress (sync_set_message.Text));
 
 					// Get the Bluetooth device
 					bt_peripheral = mBluetoothAdapter.GetRemoteDevice (sync_set_message.Text);
 					Console.WriteLine("Device Name: " + bt_peripheral.Name + " " + "Device Address: " + bt_peripheral.Address);
+//				Console.WriteLine(mBluetoothAdapter.BondedDevices);
+				var paired_devices = mBluetoothAdapter.BondedDevices;
+
+//				if (DevicePolicyService != null && paired_devices > 0) 
+				{	
+					// Search throughout all devices
+					foreach (BluetoothDevice mDevice in paired_devices) {
+//						mDevice.Name.Split
+					}
+				
+				}
 
 					// Different attempts to connect to BLE Device
 					//					mBluetoothLeService.Connect (Encoding.UTF8.GetString(ndefmessage.GetRecords()[0].GetPayload()));
@@ -173,22 +233,22 @@ namespace TheSolarBlinds{
 					//					socket = device.CreateRfcommSocketToServiceRecord(UUID.FromString("00001101-0000-1000-8000-00805f9b34fb"));
 					//					await _socket.ConnectAsync();
 
-				} else {
-					Toast.MakeText (this, "No ndef messages found", ToastLength.Short).Show ();
-					Console.WriteLine("read/write button check 3");
-				}
+//				} else {
+//					Toast.MakeText (this, "No ndef messages found", ToastLength.Short).Show ();
+//					Console.WriteLine("read/write button check 3");
+//				}
 
 				// Else wrtie to the NFC tag the hard coded string
 			} else {
-				var tag = intent.GetParcelableExtra(NfcAdapter.ExtraTag) as Tag;
-				NdefMessage ndefmessage = CreateNdefMessage ("C4:BE:84:E9:02:04");
-				Console.WriteLine("read/write button check 4");
+//				var tag = intent.GetParcelableExtra(NfcAdapter.ExtraTag) as Tag;
+//				NdefMessage ndefmessage = CreateNdefMessage ("C4:BE:84:E9:02:04");
+//				Console.WriteLine("read/write button check 4");
 
-				writeNdefMessage (tag, ndefmessage);
+//				writeNdefMessage (tag, ndefmessage);
 
-				if (tag == null) {
-					Toast.MakeText (this, "NFC tag has no data", ToastLength.Short).Show ();
-				}
+//				if (tag == null) {
+//					Toast.MakeText (this, "NFC tag has no data", ToastLength.Short).Show ();
+//				}
 			}
 			base.OnNewIntent (intent);
 		}
@@ -210,21 +270,21 @@ namespace TheSolarBlinds{
 
 		protected override void OnResume() {
 			// NFC tag has been discovered
-			var tagDetected = new IntentFilter(NfcAdapter.ActionTagDiscovered);
-			var intent = new Intent(this, GetType()).AddFlags(ActivityFlags.SingleTop);
-			intent.AddFlags(ActivityFlags.SingleTop);
-			var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
-			var filters = new[] { tagDetected };
-			nfcAdapter.EnableForegroundDispatch(this, pendingIntent, filters, null);
+//			var tagDetected = new IntentFilter(NfcAdapter.ActionTagDiscovered);
+//			var intent = new Intent(this, GetType()).AddFlags(ActivityFlags.SingleTop);
+//			intent.AddFlags(ActivityFlags.SingleTop);
+//			var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
+//			var filters = new[] { tagDetected };
+//			nfcAdapter.EnableForegroundDispatch(this, pendingIntent, filters, null);
 
 			// Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
 			// fire an intent to display a dialog asking the user to grant permission to enable it.
-			if (!mBluetoothAdapter.IsEnabled) {
-				if (!mBluetoothAdapter.IsEnabled) {
+//			if (!mBluetoothAdapter.IsEnabled) {
+				if ( 1 == 4) { // Refer to the line above for the if statement
 					Intent enableBtIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
 					StartActivityForResult (enableBtIntent, REQUEST_ENABLE_BT);
 				}
-			}
+//			}
 			base.OnResume ();
 		}
 
@@ -240,7 +300,7 @@ namespace TheSolarBlinds{
 		}
 
 		protected override void OnPause() {
-			nfcAdapter.DisableForegroundDispatch(this);
+//			nfcAdapter.DisableForegroundDispatch(this);
 			base.OnPause ();
 		}
 
