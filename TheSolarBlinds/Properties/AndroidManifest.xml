@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.the_solar_blinds">
-	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="19" />
-	<application android:label="The Solar Blinds"></application>
-	<uses-permission android:name="android.permission.BLUETOOTH" />
-	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+	<uses-sdk android:minSdkVersion="16" />
+	<application android:label="The Solar Blinds">
+	</application>
 </manifest>

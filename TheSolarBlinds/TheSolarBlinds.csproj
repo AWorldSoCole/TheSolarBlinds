@@ -63,8 +63,6 @@
     <Compile Include="ORM\SQLiteAsync.cs" />
     <Compile Include="ORM\DBRepository.cs" />
     <Compile Include="ORM\IdNicknames.cs" />
-    <Compile Include="NFCTag.cs" />
-    <Compile Include="BluetoothManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
