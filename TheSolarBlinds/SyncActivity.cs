@@ -50,7 +50,7 @@ namespace TheSolarBlinds{
 			else
 				Toast.MakeText (this, "NFC is not available!", ToastLength.Short).Show ();
 
-			Console.WriteLine ("Button Check 1");
+			Console.WriteLine ("Button Check for adapter");
 			// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
 			// BluetoothAdapter through BluetoothManager.
 //			BluetoothManager bluetoothManager = (BluetoothManager) GetSystemService (Context.BluetoothService);
@@ -149,15 +149,14 @@ namespace TheSolarBlinds{
 			string data = null;
 			BluetoothManager manager = new BluetoothManager ();
 			manager.getAllPairedDevices ();
-
-			Thread thread = new Thread(() =>
-				{
-					while (true) {
-						data = manager.getDataFromDevice();
-					}
-				});
-			thread.IsBackground = true;
-			thread.Start ();
+//			Thread thread = new Thread(() =>
+//				{
+//					while (true) {
+//						data = manager.getDataFromDevice();
+//					}
+//				});
+//			thread.IsBackground = true;
+//			thread.Start ();
 
 			Console.WriteLine ("Sync Button pushed");
 			Toast.MakeText (this, "SyncButton Pressed!", ToastLength.Short).Show ();
