@@ -6,20 +6,20 @@
     android:gravity="center_horizontal">
     <ImageButton
         android:src="@drawable/blinds_up_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
+        android:layout_width="350dp"
         android:id="@+id/blinds_up_btn"
-        android:background="#E2D300" />
+        android:background="#FAF49F" />
     <ImageButton
         android:src="@drawable/blinds_down_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
+        android:layout_width="350dp"
         android:id="@+id/blinds_down_btn"
-        android:background="#E2D300" />
+        android:background="#FAF49F" />
     <ImageButton
         android:src="@drawable/blinds_stop_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
+        android:layout_width="350dp"
         android:id="@+id/blinds_stop_btn"
-        android:background="#E2D300" />
+        android:background="#FAF49F" />
 </LinearLayout>

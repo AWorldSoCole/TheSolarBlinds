@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Bluetooth;
 
 namespace TheSolarBlinds
 {
@@ -30,14 +31,22 @@ namespace TheSolarBlinds
 			// Metrics to format the button sizes
 			var metrics = Resources.DisplayMetrics;
 			var size = (metrics.WidthPixels > metrics.HeightPixels) ? metrics.HeightPixels : metrics.WidthPixels;
+			var size_height = (metrics.HeightPixels / 4) + 20;
+			var size_width = metrics.WidthPixels - 10;
 
 			// Format the buttons
-			blinds_up_btn.LayoutParameters.Width = size-10;
-			blinds_up_btn.LayoutParameters.Height = (size-10)/3;
-			blinds_down_btn.LayoutParameters.Width = size-10;
-			blinds_down_btn.LayoutParameters.Height = (size-10)/3;
-			blinds_stop_btn.LayoutParameters.Width = size-10;
-			blinds_stop_btn.LayoutParameters.Height = (size-10)/3;
+//			blinds_up_btn.LayoutParameters.Width = size-10;
+//			blinds_up_btn.LayoutParameters.Height = (size-10)/3;
+//			blinds_down_btn.LayoutParameters.Width = size-10;
+//			blinds_down_btn.LayoutParameters.Height = (size-10)/3;
+//			blinds_stop_btn.LayoutParameters.Width = size-10;
+//			blinds_stop_btn.LayoutParameters.Height = (size-10)/3;
+			blinds_up_btn.LayoutParameters.Width = size_width;
+//			blinds_up_btn.LayoutParameters.Height = size_height;
+			blinds_down_btn.LayoutParameters.Width = size_width;
+//			blinds_down_btn.LayoutParameters.Height = size_height;
+			blinds_stop_btn.LayoutParameters.Width = size_width;
+//			blinds_stop_btn.LayoutParameters.Height = size_height;
 
 //			blinds_up_btn.Click += delegate { //Roll blinds up
 //

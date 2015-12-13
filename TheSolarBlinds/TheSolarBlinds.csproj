@@ -64,7 +64,8 @@
     <Compile Include="ORM\DBRepository.cs" />
     <Compile Include="ORM\IdNicknames.cs" />
     <Compile Include="NFCTag.cs" />
-    <Compile Include="BluetoothManager.cs" />
+    <Compile Include="BluetoothPeripheral.cs" />
+    <Compile Include="GattClientObserver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -140,8 +141,8 @@
     <AndroidResource Include="Resources\layout\SyncLayout.axml" />
     <AndroidResource Include="Resources\layout\SyncListView.axml" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="ORM\" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

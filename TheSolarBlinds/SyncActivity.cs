@@ -29,10 +29,11 @@ namespace TheSolarBlinds{
 		NfcAdapter nfcAdapter;
 		BluetoothAdapter mBluetoothAdapter;
 		BluetoothDevice bt_peripheral;
-		BluetoothGatt bt_peripheral_connectedGATT;
+		BluetoothGatt mConnectedGatt;
 //		BluetoothLeService mBluetoothLeService;
+		BluetoothGattCharacteristic gatt_motor_characteristic;
 		public static BluetoothGatt mBluetoothGatt;
-		public static BluetoothGattCallback mBluetoothGattCallBack;
+//		public static BluetoothGattCallback mBluetoothGattCallBack;
 		Handler mHandler;
 		static readonly int REQUEST_ENABLE_BT = 1;
 		// Stops scanning after 10 seconds.
@@ -43,35 +44,10 @@ namespace TheSolarBlinds{
 
 			SetContentView (Resource.Layout.SyncLayout); // Link the layout
 
-			// Check for NFC adapter on android phone
-			nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
-			if (nfcAdapter != null && nfcAdapter.IsEnabled)
-				Toast.MakeText (this, "NFC is available!", ToastLength.Short).Show ();
-			else
-				Toast.MakeText (this, "NFC is not available!", ToastLength.Short).Show ();
+			checkForNFCServices ();   // Check for NFC capability
+			checkForBluetoothServices ();   // Check for Bluetooth capability
 
-			Console.WriteLine ("Button Check for adapter");
-			// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-			// BluetoothAdapter through BluetoothManager.
-//			BluetoothManager bluetoothManager = (BluetoothManager) GetSystemService (Context.BluetoothService);
-//			mBluetoothAdapter = bluetoothManager.Adapter;
-
-			// Checks if Bluetooth is supported on the device.
-			if (mBluetoothAdapter != null && mBluetoothAdapter.IsEnabled) {
-				Toast.MakeText (this, "Bluetooth is available", ToastLength.Short).Show();
-			} else
-				Toast.MakeText (this, "Bluetooth is not supported", ToastLength.Short).Show();
-
-			Console.WriteLine ("Button Check 2");
-			// Use this check to determine whether BLE is supported on the device.  Then you can
-			// selectively disable BLE-related features.
-			if (!PackageManager.HasSystemFeature (Android.Content.PM.PackageManager.FeatureBluetoothLe)) {
-				Toast.MakeText (this, "Bluetooth LE not supported", ToastLength.Short).Show ();
-			}
-
-			Console.WriteLine ("Button Check 3");
-			// Create a database to manage the solar blinds
-			dbr = new DBRepository ("IdNickname");
+			dbr = new DBRepository ("IdNickname");   // Create a database to manage the solarblinds devices
 
 			// Get resoucres for the layout of the device
 			sync_btn = FindViewById<Button> (Resource.Id.sync_btn);
@@ -111,12 +87,27 @@ namespace TheSolarBlinds{
 			sync_set_message.Text = dbr.message;
 			sync_set_id.Text = sync_set_nickname.Text = sync_set_device_id.Text = "";
 			getCursorView ();
+
+			GattClientObserver.Instance.MotorBtnStop();
 		}
 
 		// The user can use the set button to resync the phone with the solar blinds
 		void syncSetBtnClick (object sender, EventArgs e)
 		{
-			Console.WriteLine ("Button pushed");
+			Console.WriteLine ("Set Button pushed");
+
+			dbr.addRecord (sync_set_nickname.Text, sync_set_device_id.Text);
+			sync_set_id.Text = dbr.message;
+			sync_set_nickname.Text = sync_set_device_id.Text = "";
+			getCursorView ();
+
+			GattClientObserver.Instance.MotorBtnUp();
+
+			string convert = "Practice Writing this string";
+
+//			byte[] buffer = System.Text.Encoding.UTF8.GetBytes (convert);
+//			GattClientObserver.Instance.
+//			GattClientObserver.Instance.WriteValueInternal (buffer, mConnectedGatt, GattClientObserver.Instance.gatt_motor_characteristic);
 		}
 
 		// The user can press the delete button to remove a 
@@ -128,6 +119,8 @@ namespace TheSolarBlinds{
 			sync_set_message.Text = dbr.message;
 			sync_set_id.Text = sync_set_nickname.Text = sync_set_device_id.Text = "";
 			getCursorView ();
+
+			GattClientObserver.Instance.MotorBtnDown();
 		}
 
 		// The actions that happen when a user clicks on the listview 
@@ -144,22 +137,13 @@ namespace TheSolarBlinds{
 
 
 		void syncBtnClick (object sender, EventArgs e)
-		{
-			int count = 1;
-			string data = null;
-			BluetoothManager manager = new BluetoothManager ();
-			manager.getAllPairedDevices ();
-//			Thread thread = new Thread(() =>
-//				{
-//					while (true) {
-//						data = manager.getDataFromDevice();
-//					}
-//				});
-//			thread.IsBackground = true;
-//			thread.Start ();
-
+		{	
+			// Sync Button was pressed
 			Console.WriteLine ("Sync Button pushed");
 			Toast.MakeText (this, "SyncButton Pressed!", ToastLength.Short).Show ();
+
+			getAllPairedDevices (mBluetoothAdapter);
+
 			sync_read_write_btn = FindViewById<ToggleButton> (Resource.Id.sync_read_write_btn);
 			sync_set_message = FindViewById<TextView> (Resource.Id.sync_set_message);
 			Console.WriteLine("Testing the Bluetooth!!!");
@@ -276,13 +260,13 @@ namespace TheSolarBlinds{
 //			var filters = new[] { tagDetected };
 //			nfcAdapter.EnableForegroundDispatch(this, pendingIntent, filters, null);
 
-			// Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-			// fire an intent to display a dialog asking the user to grant permission to enable it.
+//			// Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
+//			// fire an intent to display a dialog asking the user to grant permission to enable it.
 //			if (!mBluetoothAdapter.IsEnabled) {
-				if ( 1 == 4) { // Refer to the line above for the if statement
-					Intent enableBtIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
-					StartActivityForResult (enableBtIntent, REQUEST_ENABLE_BT);
-				}
+//				if ( 1 == 4) { // Refer to the line above for the if statement
+//					Intent enableBtIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
+//					StartActivityForResult (enableBtIntent, REQUEST_ENABLE_BT);
+//				}
 //			}
 			base.OnResume ();
 		}
@@ -301,6 +285,67 @@ namespace TheSolarBlinds{
 		protected override void OnPause() {
 //			nfcAdapter.DisableForegroundDispatch(this);
 			base.OnPause ();
+		}
+
+		private void checkForBluetoothServices() {
+			// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
+			// BluetoothAdapter through BluetoothManager.
+			Console.WriteLine ("Checking for Bluetooth adapter");
+			BluetoothManager bluetoothManager = (BluetoothManager) GetSystemService (Context.BluetoothService);
+			mBluetoothAdapter = bluetoothManager.Adapter;
+
+			// Checks if Bluetooth is supported on the device.
+			if (mBluetoothAdapter != null && mBluetoothAdapter.IsEnabled) {
+				Toast.MakeText (this, "Bluetooth is available", ToastLength.Short).Show();
+			} else
+				Toast.MakeText (this, "Bluetooth is not supported", ToastLength.Short).Show();
+
+			Console.WriteLine ("Checking if BLE is supported on the device");
+			// Use this check to determine whether BLE is supported on the device.  Then you can
+			// selectively disable BLE-related features.
+			if (!PackageManager.HasSystemFeature (Android.Content.PM.PackageManager.FeatureBluetoothLe)) {
+				Toast.MakeText (this, "Bluetooth LE not supported", ToastLength.Short).Show ();
+			}
+
+			// Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
+			// fire an intent to display a dialog asking the user to grant permission to enable it.
+			if (!mBluetoothAdapter.IsEnabled) {
+				if ( 1 == 4) { // Refer to the line above for the if statement
+					Intent enableBtIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
+					StartActivityForResult (enableBtIntent, REQUEST_ENABLE_BT);
+				}
+			}
+		}
+
+		private void checkForNFCServices() {
+			// Check for NFC adapter on android phone
+			Console.WriteLine ("Checking to NFC adapter");
+			nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
+			if (nfcAdapter != null && nfcAdapter.IsEnabled)
+				Toast.MakeText (this, "NFC is available!", ToastLength.Short).Show ();
+			else
+				Toast.MakeText (this, "NFC is not available!", ToastLength.Short).Show ();
+		}
+
+		public void getAllPairedDevices(BluetoothAdapter btAdapter) {
+			var devices = btAdapter.BondedDevices;
+
+			if (devices != null && devices.Count > 0) {
+
+				// Search throughout all devices
+				foreach (BluetoothDevice mDevice in devices) {
+					if (mDevice.Name == "SolarBlinds2") {
+						Console.WriteLine ("Bluetooth Peripheral has been found attempting callback for " + mDevice.Name.ToString());
+//						openDeviceConnnection (mDevice);
+						mConnectedGatt = mDevice.ConnectGatt(this, false, GattClientObserver.Instance);
+					}
+//					if (mDevice.Address == "67:FB:71:7F:31:A2") {
+//						Console.WriteLine ("Bluetooth Peripheral has been found attempting callback for " + mDevice.Name.ToString());
+//						//						openDeviceConnnection (mDevice);
+//						mConnectedGatt = mDevice.ConnectGatt(this, false, GattClientObserver.Instance);
+//					}
+				}
+			}
 		}
 
 		// Attempt to format NFC tag if the tag is not formatted

@@ -28,14 +28,22 @@ namespace TheSolarBlinds
 			// Metrics to format the button sizes
 			var metrics = Resources.DisplayMetrics;
 			var size = (metrics.WidthPixels > metrics.HeightPixels) ? metrics.HeightPixels : metrics.WidthPixels;
+			var size_height = (metrics.HeightPixels / 4) + 20;
+			var size_width = metrics.WidthPixels - 10;
 
 			// Format the buttons
-			menu_motor_btn.LayoutParameters.Width = (size/2)-10;
-			menu_motor_btn.LayoutParameters.Height = (size/4)-10;
-			menu_sync_btn.LayoutParameters.Width = (size/2)-10;
-			menu_sync_btn.LayoutParameters.Height = (size/4)-10;
-			menu_weather_btn.LayoutParameters.Width = (size/2)-10;
-			menu_weather_btn.LayoutParameters.Height = (size/4)-10;
+//			menu_motor_btn.LayoutParameters.Width = (size/2)-10;
+//			menu_motor_btn.LayoutParameters.Height = (size/4)-10;
+//			menu_sync_btn.LayoutParameters.Width = (size/2)-10;
+//			menu_sync_btn.LayoutParameters.Height = (size/4)-10;
+//			menu_weather_btn.LayoutParameters.Width = (size/2)-10;
+//			menu_weather_btn.LayoutParameters.Height = (size/4)-10;
+			menu_motor_btn.LayoutParameters.Width = size_width;
+			menu_motor_btn.LayoutParameters.Height = size_height;
+			menu_sync_btn.LayoutParameters.Width = size_width;
+			menu_sync_btn.LayoutParameters.Height = size_height;
+			menu_weather_btn.LayoutParameters.Width = size_width;
+			menu_weather_btn.LayoutParameters.Height = size_height;
 
 			menu_motor_btn.Click += delegate { //Motor button will launch Motor activity
 				StartActivity(typeof(MotorActivity));

@@ -84,42 +84,4 @@
             android:layout_height="match_parent"
             android:id="@+id/weather_forecast_btn" />
     </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:id="@+id/getSection">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/currentWeatherSection"
-            android:gravity="center_horizontal">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/roomTempSection">
-                <TextView
-                    android:text="Room Temp: "
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/roomTempLabel"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/roomTempText"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-            </LinearLayout>
-            <Button
-                android:id="@+id/weather_view_battery_btn"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:text="See Battery Details" />
-        </LinearLayout>
-    </LinearLayout>
 </LinearLayout>

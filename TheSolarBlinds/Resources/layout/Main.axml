@@ -9,17 +9,17 @@
         android:layout_width="350dp"
         android:layout_height="150dp"
         android:id="@+id/menu_motor_btn"
-        android:background="#E2D300" />
+        android:background="#FAF49F" />
     <ImageButton
         android:src="@drawable/menu_weather_icon"
         android:layout_width="350dp"
         android:layout_height="150dp"
         android:id="@+id/menu_weather_btn"
-        android:background="#E2D300" />
+        android:background="#FAF49F" />
     <ImageButton
         android:src="@drawable/menu_sync_icon"
         android:layout_width="350dp"
         android:layout_height="150dp"
         android:id="@+id/menu_sync_btn"
-        android:background="#E2D300" />
+        android:background="#FAF49F" />
 </LinearLayout>

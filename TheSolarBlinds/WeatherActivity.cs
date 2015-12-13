@@ -33,7 +33,6 @@ namespace TheSolarBlinds
 			EditText weather_zipcode_text = FindViewById<EditText>(Resource.Id.weather_zipcode_text);
 			Button weather_get_update_btn = FindViewById<Button>(Resource.Id.weather_get_update_btn);
 			Button weather_forecast_btn = FindViewById<Button>(Resource.Id.weather_forecast_btn);
-			Button weather_view_battery_btn = FindViewById<Button>(Resource.Id.weather_view_battery_btn);
 			string weather_city_id = "0"; 
 
 			// Get current weather json using a zipcode on button press
