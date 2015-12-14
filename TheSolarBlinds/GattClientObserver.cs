@@ -1,5 +1,9 @@
 ﻿using System;
 using Android.Bluetooth;
+using Android.Content;
+using Android.Widget;
+using Java.Util;
+using System.Linq;
 
 namespace TheSolarBlinds
 {
@@ -8,6 +12,8 @@ namespace TheSolarBlinds
 		private static GattClientObserver _instance;
 		private static BluetoothGattCharacteristic _gatt_motor_characteristic;
 		private static BluetoothGatt _devicegatt;
+		private static BluetoothDevice _device;
+		private static ProfileState _state;
 
 		public BluetoothGattCharacteristic gatt_motor_characteristic 
 		{
@@ -19,6 +25,18 @@ namespace TheSolarBlinds
 		{
 			get { return _devicegatt; }
 			set { _devicegatt = value; }
+		}
+
+		public BluetoothDevice device
+		{
+			get { return _device; }
+			set { _device = value; }
+		}
+
+		public ProfileState state
+		{
+			get { return _state; }
+			set { _state = value; }
 		}
 
 		public static GattClientObserver Instance
@@ -60,9 +78,10 @@ namespace TheSolarBlinds
 //						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
 //					}
 					// SolarBlinds Temperature Characteristic
-//					if (characteristic.Uuid.ToString() == "0000fff2-0000-1000-8000-00805f9b34fb") {
-//						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
-//					}
+					if (characteristic.Uuid.ToString() == "0000fff5-0000-1000-8000-00805f9b34fb") {
+						Console.WriteLine ("Subscribing to this charateristic");
+						SubscribeCharacteristic (characteristic, gatt);
+					}
 //					Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
 				}
 			}
@@ -86,25 +105,39 @@ namespace TheSolarBlinds
 			gatt.WriteCharacteristic(characteristic); 
 		}
 
+		public void SubscribeCharacteristic(BluetoothGattCharacteristic characteristic, BluetoothGatt gatt) {
+			gatt.SetCharacteristicNotification(characteristic, true);
+//			var descriptor = characteristic.GetDescriptor(UUID.FromString("0000fff4-0000-1000-8000-00805f9b34fb"));
+//			descriptor.SetValue(BluetoothGattDescriptor.EnableNotificationValue.ToArray());
+//			gatt.WriteDescriptor(descriptor);
+		}
+
 		public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState)
 		{
 			switch (newState)
 			{
 			case ProfileState.Connected:
 				Console.WriteLine ("Connected peripheral: " + gatt.Device.Name);
+//				Toast.MakeText (Android.Content.Context, "Bluetooth Connected", ToastLength.Short).Show ();
+//				SyncActivity.sync_set_message.Text = "Device is connected";
+				GattClientObserver.Instance.state = newState;
 				gatt.DiscoverServices ();
 				break;
 			case ProfileState.Disconnected:
 				Console.WriteLine ("Disconnected peripheral: " + gatt.Device.Name);
+				GattClientObserver.Instance.state = newState;
+//				SyncActivity.sync_set_message.Text = "Device is connected";
 //				gatt.Disconnect ();
 				//After connection state changed to disconnected close gatt
 				gatt.Close();
 				break;
 			case ProfileState.Connecting:
 				Console.WriteLine("Connecting peripheral: " + gatt.Device.Name);
+				GattClientObserver.Instance.state = newState;
 				break;
 			case ProfileState.Disconnecting:
 				Console.WriteLine("Disconnecting peripheral: " + gatt.Device.Name);
+				GattClientObserver.Instance.state = newState;
 				break;
 			}
 		}
@@ -139,9 +172,15 @@ namespace TheSolarBlinds
 				Read (characteristic, gatt);
 			} else {
 				var errorCode = status; 
-				Console.WriteLine("Writing was unsuccessfull: Error Code " +  status.ToString());
+				Console.WriteLine("Writing was unsuccessfull: Error Code " +  errorCode.ToString());
 				//Process error... 
 			} 
+		}
+
+		public override void OnCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+			var newValue = characteristic.GetValue(); 
+			//Process value...
+			Console.WriteLine("Characteristic has changed");
 		}
 
 		public void MotorBtnUp ()

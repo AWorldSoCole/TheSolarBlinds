@@ -48,17 +48,17 @@ namespace TheSolarBlinds
 			blinds_stop_btn.LayoutParameters.Width = size_width;
 //			blinds_stop_btn.LayoutParameters.Height = size_height;
 
-//			blinds_up_btn.Click += delegate { //Roll blinds up
-//
-//			};
-//
-//			blinds_down_btn.Click += delegate { //Roll blinds down
-//
-//			};
-//
-//			blinds_stop_btn.Click += delegate { //Stop blinds
-//
-//			};
+			blinds_up_btn.Click += delegate { //Roll blinds up
+				GattClientObserver.Instance.MotorBtnUp();
+			};
+
+			blinds_down_btn.Click += delegate { //Roll blinds down
+				GattClientObserver.Instance.MotorBtnDown();
+			};
+
+			blinds_stop_btn.Click += delegate { //Stop blinds
+				GattClientObserver.Instance.MotorBtnStop();
+			};
 		}
 	}
 }
