@@ -15,6 +15,10 @@ namespace TheSolarBlinds
 		private static BluetoothDevice _device;
 		private static ProfileState _state;
 
+//		private static final UUID HUMIDITY_SERVICE = UUID.fromString("f000aa20-0451-4000-b000-000000000000");
+//		private static final UUID HUMIDITY_SERVICE = UUID.fromString("f000aa20-0451-4000-b000-000000000000");
+//		private static final UUID HUMIDITY_SERVICE = UUID.fromString("f000aa20-0451-4000-b000-000000000000");
+
 		public BluetoothGattCharacteristic gatt_motor_characteristic 
 		{
 			get { return _gatt_motor_characteristic; }
@@ -199,6 +203,12 @@ namespace TheSolarBlinds
 		{
 			byte[] motorUp = { 0x00 };
 			WriteValueInternal (motorUp, GattClientObserver.Instance.devicegatt, GattClientObserver.Instance.gatt_motor_characteristic);
+		}
+
+		public int ReadTemperature() 
+		{
+			int temperature = 32;
+			return temperature;
 		}
 	}
 }

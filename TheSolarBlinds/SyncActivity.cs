@@ -138,16 +138,18 @@ namespace TheSolarBlinds{
 			sync_set_message = FindViewById<TextView> (Resource.Id.sync_set_message);
 
 			int count = 0;
-			do {
-				ConnectionStatus ();
-				count++;
-//				Thread.Sleep(1000);
-				// Create a break point for the incase the bluetooth device is unreachable
-				if (count == 1000) {
-					Console.WriteLine("Count " + count);
-					break;
-				}
-			} while (GattClientObserver.Instance.devicegatt == null);
+//			do {
+//				ConnectionStatus ();
+//				count++;
+////				Thread.Sleep(1000);
+//				// Create a break point for the incase the bluetooth device is unreachable
+//				if (count == 5000) {
+//					Console.WriteLine("Count " + count);
+//					break;
+//				}
+//			} while (GattClientObserver.Instance.devicegatt == null);
+//
+			//   One last check to be sure
 			ConnectionStatus ();
 		}
 
@@ -284,7 +286,7 @@ namespace TheSolarBlinds{
 
 				// Search throughout all devices
 				foreach (BluetoothDevice mDevice in devices) {
-					if (mDevice.Name == "SolarBlinds2") {
+					if (mDevice.Name == "SolarBlinds ") {
 						Console.WriteLine ("Bluetooth Peripheral has been found attempting callback for " + mDevice.Name.ToString());
 						mConnectedGatt = mDevice.ConnectGatt(this, false, GattClientObserver.Instance);
 					}
