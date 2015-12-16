@@ -59,34 +59,16 @@ namespace TheSolarBlinds
 				foreach(var characteristic in service.Characteristics) {
 					Console.WriteLine("Has characteristic with adress: " + characteristic.Uuid);
 					IsEncryptedAndWritable (characteristic);
-					// Device Name
-//					if (characteristic.Uuid.ToString() == "00002a00-0000-1000-8000-00805f9b34fb") {
-//						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
-//					}
-					// Heart Rate Measurement 
-//					if (characteristic.Uuid.ToString() == "00002a39-0000-1000-8000-00805f9b34fb") {
-//						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
-//						GattClientObserver.Instance.gatt_motor_characteristic = characteristic;
-//					}
-//					if (characteristic.Uuid.ToString() == "f000ee01-0451-4000-b000-000000000000") {
-//						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
-//					}
 					// SolarBlinds Motor Characteristic
 					if (characteristic.Uuid.ToString() == "0000fff1-0000-1000-8000-00805f9b34fb") {
 						GattClientObserver.Instance.gatt_motor_characteristic = characteristic;
 						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
 					}
-//					// SolarBlinds Motor Characteristic Phone App
-//					if (characteristic.Uuid.ToString() == "0000fff1-00451-4000-B000-000000000000") {
-//						GattClientObserver.Instance.gatt_motor_characteristic = characteristic;
-//						Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
-//					}
 					// SolarBlinds Temperature Characteristic
 					if (characteristic.Uuid.ToString() == "0000fff5-0000-1000-8000-00805f9b34fb") {
 						Console.WriteLine ("Subscribing to this charateristic");
 						SubscribeCharacteristic (characteristic, gatt);
 					}
-//					Console.WriteLine("Charateristic Data is: " + Read(characteristic, gatt));
 				}
 			}
 		}
@@ -122,15 +104,12 @@ namespace TheSolarBlinds
 			{
 			case ProfileState.Connected:
 				Console.WriteLine ("Connected peripheral: " + gatt.Device.Name);
-//				Toast.MakeText (Android.Content.Context, "Bluetooth Connected", ToastLength.Short).Show ();
-//				SyncActivity.sync_set_message.Text = "Device is connected";
 				GattClientObserver.Instance.state = newState;
 				gatt.DiscoverServices ();
 				break;
 			case ProfileState.Disconnected:
 				Console.WriteLine ("Disconnected peripheral: " + gatt.Device.Name);
 				GattClientObserver.Instance.state = newState;
-//				SyncActivity.sync_set_message.Text = "Device is connected";
 //				gatt.Disconnect ();
 				//After connection state changed to disconnected close gatt
 				gatt.Close();
@@ -159,15 +138,10 @@ namespace TheSolarBlinds
 			//Read value from device 
 			byte[] readValue = characteristic.GetValue();
 			var str = System.Text.Encoding.UTF8.GetString (readValue, 0, readValue.Length);
-//			byte[] test = { 0x61, 0x62, 0x63, 0x64 };
-//			foreach(byte place in test) {
-//				Console.WriteLine(place);
-//			}
 			foreach(byte place in readValue) {
 				Console.WriteLine(place);
 			}
 			Console.WriteLine ("Data: " + str);
-			//Process received value...
 		}
 
 		public override void OnCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, GattStatus status) {
@@ -177,7 +151,6 @@ namespace TheSolarBlinds
 			} else {
 				var errorCode = status; 
 				Console.WriteLine("Writing was unsuccessfull: Error Code " +  errorCode.ToString());
-				//Process error... 
 			} 
 		}
 
@@ -205,6 +178,7 @@ namespace TheSolarBlinds
 			WriteValueInternal (motorUp, GattClientObserver.Instance.devicegatt, GattClientObserver.Instance.gatt_motor_characteristic);
 		}
 
+		//   Testing functionality
 		public int ReadTemperature() 
 		{
 			int temperature = 32;

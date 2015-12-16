@@ -195,15 +195,6 @@ namespace TheSolarBlinds
 			// aapt resource value: 0x7f050009
 			public const int menu_weather_btn = 2131034121;
 			
-			// aapt resource value: 0x7f050035
-			public const int roomTempLabel = 2131034165;
-			
-			// aapt resource value: 0x7f050034
-			public const int roomTempSection = 2131034164;
-			
-			// aapt resource value: 0x7f050036
-			public const int roomTempText = 2131034166;
-			
 			// aapt resource value: 0x7f05000f
 			public const int sync_btn = 2131034127;
 			

@@ -30,10 +30,8 @@ namespace TheSolarBlinds{
 		BluetoothAdapter mBluetoothAdapter;
 		public static BluetoothDevice bt_peripheral;
 		BluetoothGatt mConnectedGatt;
-//		BluetoothLeService mBluetoothLeService;
 		BluetoothGattCharacteristic gatt_motor_characteristic;
 		public static BluetoothGatt mBluetoothGatt;
-//		public static BluetoothGattCallback mBluetoothGattCallBack;
 		Handler mHandler;
 		static readonly int REQUEST_ENABLE_BT = 1;
 		// Stops scanning after 10 seconds.
@@ -101,6 +99,19 @@ namespace TheSolarBlinds{
 			sync_set_id.Text = dbr.message;
 			sync_set_nickname.Text = sync_set_device_id.Text = "";
 			getCursorView ();
+
+			// Get the Bluetooth device
+			bt_peripheral = mBluetoothAdapter.GetRemoteDevice (sync_set_device_id.Text);
+			Console.WriteLine("Device Name: " + bt_peripheral.Name.ToString() + " " + "Device Address: " + bt_peripheral.Address);
+
+			mConnectedGatt = bt_peripheral.ConnectGatt(this, false, GattClientObserver.Instance);
+
+			sync_set_message.Text = "Device has been set.";
+
+			dbr.addRecord (sync_set_nickname.Text, sync_set_device_id.Text);
+			sync_set_message.Text = dbr.message;
+			sync_set_nickname.Text = sync_set_device_id.Text = "";
+			getCursorView ();
 		}
 
 		// The user can press the delete button to remove a 
@@ -132,24 +143,19 @@ namespace TheSolarBlinds{
 			// Sync Button was pressed
 			Console.WriteLine ("Sync Button pushed");
 
-			getAllPairedDevices (mBluetoothAdapter);
+			// Get the Bluetooth device
+			bt_peripheral = mBluetoothAdapter.GetRemoteDevice ("C4:BE:84:E9:02:04");
+			Console.WriteLine("Device Name: " + bt_peripheral.Name.ToString() + " " + "Device Address: " + bt_peripheral.Address);
+			sync_set_nickname.Text = bt_peripheral.Name.ToString();
+			sync_set_device_id.Text = bt_peripheral.Address.ToString();
+
+			mConnectedGatt = bt_peripheral.ConnectGatt(this, false, GattClientObserver.Instance);
+
+//			getAllPairedDevices (mBluetoothAdapter);
 
 			sync_read_write_btn = FindViewById<ToggleButton> (Resource.Id.sync_read_write_btn);
 			sync_set_message = FindViewById<TextView> (Resource.Id.sync_set_message);
 
-			int count = 0;
-//			do {
-//				ConnectionStatus ();
-//				count++;
-////				Thread.Sleep(1000);
-//				// Create a break point for the incase the bluetooth device is unreachable
-//				if (count == 5000) {
-//					Console.WriteLine("Count " + count);
-//					break;
-//				}
-//			} while (GattClientObserver.Instance.devicegatt == null);
-//
-			//   One last check to be sure
 			ConnectionStatus ();
 		}
 
@@ -170,12 +176,11 @@ namespace TheSolarBlinds{
 					NdefMessage ndefmessage = (NdefMessage) parcelables[0];
 
 					// MAC Address from NFC tag 
-					sync_set_message.Text = Encoding.UTF8.GetString(ndefmessage.GetRecords()[0].GetPayload());
-//					sync_set_message.Text = "C4:BE:84:E9:02:04";
+					sync_set_device_id.Text = Encoding.UTF8.GetString(ndefmessage.GetRecords()[0].GetPayload());
 					Console.WriteLine("MAC Address: " + sync_set_message.Text + "Valid: " + BluetoothAdapter.CheckBluetoothAddress (sync_set_message.Text));
 
 					// Get the Bluetooth device
-					bt_peripheral = mBluetoothAdapter.GetRemoteDevice (sync_set_message.Text);
+					bt_peripheral = mBluetoothAdapter.GetRemoteDevice (sync_set_device_id.Text);
 					Console.WriteLine("Device Name: " + bt_peripheral.Name.ToString() + " " + "Device Address: " + bt_peripheral.Address);
 
 					mConnectedGatt = bt_peripheral.ConnectGatt(this, false, GattClientObserver.Instance);
@@ -290,11 +295,6 @@ namespace TheSolarBlinds{
 						Console.WriteLine ("Bluetooth Peripheral has been found attempting callback for " + mDevice.Name.ToString());
 						mConnectedGatt = mDevice.ConnectGatt(this, false, GattClientObserver.Instance);
 					}
-//					if (mDevice.Address == "67:FB:71:7F:31:A2") {
-//						Console.WriteLine ("Bluetooth Peripheral has been found attempting callback for " + mDevice.Name.ToString());
-//						//						openDeviceConnnection (mDevice);
-//						mConnectedGatt = mDevice.ConnectGatt(this, false, GattClientObserver.Instance);
-//					}
 				}
 			}
 		}
@@ -413,24 +413,20 @@ namespace TheSolarBlinds{
 			switch (GattClientObserver.Instance.state)
 			{
 			case ProfileState.Connected:
-//				Console.WriteLine ("Connected to peripheral: " + gatt.Device.Name);
-				Console.WriteLine ("Connected to peripheral: ");
-				sync_set_message.Text = "Connected to peripheral: ";
+				Console.WriteLine ("Connected to peripheral ");
+				sync_set_message.Text = "Connected to peripheral ";
 				break;
 			case ProfileState.Disconnected:
-//				Console.WriteLine ("Disconnected to peripheral: " + gatt.Device.Name);
-				Console.WriteLine ("Disconnected to peripheral: ");
-				sync_set_message.Text = "Disconnected to peripheral: ";
+				Console.WriteLine ("Disconnected to peripheral ");
+				sync_set_message.Text = "Disconnected to peripheral ";
 				break;
 			case ProfileState.Connecting:
-//				Console.WriteLine("Connecting to peripheral: " + gatt.Device.Name);
-				Console.WriteLine("Connecting to peripheral: ");
-				sync_set_message.Text = "Connecting to peripheral: ";
+				Console.WriteLine("Connecting to peripheral ");
+				sync_set_message.Text = "Connecting to peripheral ";
 				break;
 			case ProfileState.Disconnecting:
-//				Console.WriteLine("Disconnecting to peripheral: " + gatt.Device.Name);
-				Console.WriteLine("Disconnecting to peripheral: ");
-				sync_set_message.Text = "Disconnecting to peripheral: ";
+				Console.WriteLine("Disconnecting to peripheral ");
+				sync_set_message.Text = "Disconnecting to peripheral ";
 				break;
 			}
 		}
